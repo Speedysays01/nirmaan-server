@@ -91,22 +91,29 @@ export const createProject = TryCatch(async (req, res) => {
     to: leaderEmail, // Recipient email
     subject: "Registration Confirmation - Project Competition",
     text: `Dear ${leaderName},
-
-Greeting from Cyborg Robotics and Coding club!
-Congratulations! Your project "${projectName}" has been successfully registered for NIRMAAN 2025.
-
-Here are your project details:
-- Project ID: ${projectID} (Please keep this safe for future reference)
-- Category: ${category}
-- Description: ${description}
-
-Futher details will be conveyed to you via email.
-Stay tuned for more updates! 
-We look forward to your participation!
-
-Best regards,
-Surabhi (President- Cyborg club) `
+  
+  Greetings from Cyborg Robotics and Coding club!
+  Congratulations! Your project "${projectName}" has been successfully registered for NIRMAAN 2025.
+  
+  Here are your project details:
+  - Project ID: ${projectID} (Please keep this safe for future reference)
+  - Category: ${category}
+  - Description: ${description}
+  
+  Here is your team information:
+  - Project Leader: ${leaderName})
+  - Team Members:
+    ${members.map((member, index) => `  ${index + 1}. ${member.name}`).join("\n")}
+  
+  Further details will be conveyed to you via email.
+  Stay tuned for more updates! 
+  We look forward to your participation!
+  
+  Best regards,
+  Surabhi (President - Cyborg Club)
+  `
   };
+  
 
   // Send the email
   transporter.sendMail(mailOptions, (error, info) => {
