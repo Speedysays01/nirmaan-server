@@ -119,7 +119,7 @@ Surabhi (President- Cyborg club) `
     } else {
       console.log("Email sent:", info.response);
       res.status(201).json({
-        message: "Project created successfully and email sent!",
+        message: "Project created successfully and email sent to your address!",
         project,
       });
     }
