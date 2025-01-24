@@ -55,7 +55,7 @@ export const createProject = TryCatch(async (req, res) => {
   // Validate number of members
   if (members && members.length > 3) {
     return res.status(400).json({
-      message: "A project can have a maximum of 3 members.",
+      message: "A project can have a maximum of 3 members. Please remove extra members.",
     });
   }
 
