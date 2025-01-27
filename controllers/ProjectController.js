@@ -92,7 +92,7 @@ export const createProject = TryCatch(async (req, res) => {
     subject: "Registration Confirmation - Project Competition",
     text: `Dear ${leaderName},
   
-  Greetings from Cyborg Robotics and Coding club!
+  Greetings from Electronics and Telecommunication Department!
   Congratulations! Your project "${projectName}" has been successfully registered for NIRMAAN 2025.
   
   Here are your project details:
@@ -110,7 +110,8 @@ export const createProject = TryCatch(async (req, res) => {
   We look forward to your participation!
   
   Best regards,
-  Surabhi (President - Cyborg Club)
+  Surabhi (President - Cyborg Club, E&TC department)
+  9326004793
   `
   };
   
