@@ -174,13 +174,13 @@ export const getCompetitionStats = async (req, res) => {
 export const getENTCContacts = async (req, res) => {
   try {
     // Fetch projects where leaderDepartment is E&TC
-    const entcProjects = await Data.find(
+    const entcContacts = await Data.find(
       { leaderDepartment: "E&TC" },
       { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 } // Select only required fields
     );
 
     // Send response
-    res.status(200).json({ entcProjects });
+    res.status(200).json({ entcContacts });
   } catch (error) {
     res.status(500).json({ error: "Error fetching E&TC contacts", details: error.message });
   }
