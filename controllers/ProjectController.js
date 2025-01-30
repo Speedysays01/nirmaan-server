@@ -133,3 +133,111 @@ export const createProject = TryCatch(async (req, res) => {
     }
   });
 });
+
+
+
+
+
+export const getCompetitionStats = async (req, res) => {
+  try {
+    // Fetch total number of registrations
+    const totalRegistrations = await Data.countDocuments();
+
+    // Calculate prize pool (₹200 per registration)
+    const prizePoolCollected = totalRegistrations * 200;
+
+    // Count projects based on category
+    const hardwareProjects = await Data.countDocuments({ category: "Hardware" });
+    const softwareProjects = await Data.countDocuments({ category: "Software" });
+
+    // Count registrations from E&TC and other branches
+    const entcRegistrations = await Data.countDocuments({ leaderDepartment: "E&TC" });
+    const otherRegistrations = totalRegistrations - entcRegistrations;
+
+    // Send response
+    res.status(200).json({
+      totalRegistrations,
+      prizePoolCollected,
+      hardwareProjects,
+      softwareProjects,
+      entcRegistrations,
+      otherRegistrations
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching competition stats", details: error.message });
+  }
+};
+
+
+
+//to get entc conacts
+export const getENTCContacts = async (req, res) => {
+  try {
+    // Fetch projects where leaderDepartment is E&TC
+    const entcProjects = await Data.find(
+      { leaderDepartment: "E&TC" },
+      { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 } // Select only required fields
+    );
+
+    // Send response
+    res.status(200).json({ entcProjects });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching E&TC contacts", details: error.message });
+  }
+};
+
+
+export const getOtherContacts = async (req, res) => {
+  try {
+    // Fetch projects where leaderDepartment is NOT E&TC
+    const otherProjects = await Data.find(
+      { leaderDepartment: { $ne: "E&TC" } }, // $ne (not equal) operator filters out E&TC
+      { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 } // Select only required fields
+    );
+
+    // Send response
+    res.status(200).json({ otherProjects });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching other department contacts", details: error.message });
+  }
+};
+
+
+
+
+
+
+export const getEntcProjects = async (req, res) => {
+  try {
+    // Fetch projects where leaderDepartment is E&TC
+    const entcProjects = await Data.find(
+      { leaderDepartment: "E&TC" },
+      { projectID: 1, projectName: 1, description: 1, _id: 0 } // Select only required fields
+    );
+
+    // Send response
+    res.status(200).json({ entcProjects });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching E&TC projects", details: error.message });
+  }
+};
+
+
+
+
+
+
+export const getOtherProjects = async (req, res) => {
+  try {
+    // Fetch projects where leaderDepartment is NOT E&TC
+    const otherProjects = await Data.find(
+      { leaderDepartment: { $ne: "E&TC" } }, // $ne (not equal) filters out E&TC
+      { projectID: 1, projectName: 1, description: 1, _id: 0 } // Select only required fields
+    );
+
+    // Send response
+    res.status(200).json({ otherProjects });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching other department projects", details: error.message });
+  }
+};
