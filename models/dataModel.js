@@ -12,19 +12,19 @@ const DataSchema = new mongoose.Schema(
  
     leaderName: {
       type: String,
-      required: true,
+    
     },
     leaderDepartment: {
       type: String,
-      required: true,
+      
     },
     leaderRollNo: {
       type: String,
-      required: true,
+      
     },
     leaderPhoneNo: {
       type: String,
-      required: true,
+      
       validate: {
         validator: function (v) {
           return /^\d{10}$/.test(v); // Ensures a 10-digit phone number
@@ -34,7 +34,7 @@ const DataSchema = new mongoose.Schema(
     },
     leaderEmail: {
       type: String,
-      required: true,
+      
       validate: {
         validator: function (v) {
           return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); // Validates email format
