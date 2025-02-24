@@ -23,23 +23,19 @@ async function generateUniqueProjectID() {
 
 export const createProject = TryCatch(async (req, res) => {
   const {
-    projectName,
-    category,
-    description,
     leaderName,
     leaderDepartment,
     leaderRollNo,
     leaderPhoneNo,
     leaderEmail,
     transactionID,
-    members,
+    member1,
+    member2,
+    member3
   } = req.body;
 
   // Validate required fields
   if (
-    !projectName ||
-    !category ||
-    !description ||
     !leaderName ||
     !leaderDepartment ||
     !leaderRollNo ||
@@ -52,69 +48,57 @@ export const createProject = TryCatch(async (req, res) => {
     });
   }
 
-  // Validate number of members
-  if (members && members.length > 3) {
-    return res.status(400).json({
-      message: "A project can have a maximum of 3 members. Please remove extra members.",
-    });
-  }
-
   // Generate unique 4-digit ProjectID
   const projectID = await generateUniqueProjectID();
 
   // Create a new project document
   const project = await Data.create({
     projectID,
-    projectName,
-    category,
-    description,
     leaderName,
     leaderDepartment,
     leaderRollNo,
     leaderPhoneNo,
     leaderEmail,
     transactionID,
-    members,
+    member1,
+    member2,
+    member3,
   });
 
   // Nodemailer configuration
   const transporter = nodemailer.createTransport({
-    service: "gmail", // You can use other services like Yahoo, Outlook, etc.
+    service: "gmail",
     auth: {
-      user: "nirmaan.cyborg@gmail.com", // Replace with your email
-      pass: "phylcgvdwlgknlqt", // Replace with your email password or app password
+      user: "nirmaan.cyborg@gmail.com",
+      pass: "phylcgvdwlgknlqt",
     },
   });
 
   const mailOptions = {
-    from: "nirmaan.cyborg@gmail.com", // Sender email
-    to: leaderEmail, // Recipient email
+    from: "nirmaan.cyborg@gmail.com",
+    to: leaderEmail,
     subject: "Registration Confirmation - Project Competition",
     text: `Dear ${leaderName},
-  
-  Greetings from Electronics and Telecommunication Department!
-  Congratulations! Your project "${projectName}" has been successfully registered for NIRMAAN 2025.
-  
-  Here are your project details:
-  - Project ID: ${projectID} (Please keep this safe for future reference)
-  - Category: ${category}
-  - Description: ${description}
-  
-  Here is your team information:
-  - Project Leader: ${leaderName})
-  - Team Members:
-    ${members.map((member, index) => `  ${index + 1}. ${member.name}`).join("\n")}
-  
-  Further details will be conveyed to you via email.
-  Stay tuned for more updates! 
-  We look forward to your participation!
-  
-  Best regards,
-  Surabhi (President - Cyborg Club, E&TC department)
-  9326004793
-  `
+
+Greetings from Electronics and Telecommunication Department!
+Congratulations! Your project has been successfully registered for NIRMAAN 2025.
+
+Here are your project details:
+- Project ID: ${projectID} (Please keep this safe for future reference)
+
+Here is your team information:
+- Project Leader: ${leaderName}
+- Team Members:
+  ${[member1, member2, member3].filter(Boolean).map((member, index) => `  ${index + 1}. ${member}`).join("\n")}
+
+Further details will be conveyed to you via email.
+Stay tuned for more updates! 
+We look forward to your participation!
+
+Best regards,  
+Surabhi (President - Cyborg Club, E&TC department)  
+9326004793`
   };
-  
 
   // Send the email
   transporter.sendMail(mailOptions, (error, info) => {
@@ -134,10 +118,6 @@ export const createProject = TryCatch(async (req, res) => {
   });
 });
 
-
-
-
-
 export const getCompetitionStats = async (req, res) => {
   try {
     // Fetch total number of registrations
@@ -145,10 +125,6 @@ export const getCompetitionStats = async (req, res) => {
 
     // Calculate prize pool (₹200 per registration)
     const prizePoolCollected = totalRegistrations * 200;
-
-    // Count projects based on category
-    const hardwareProjects = await Data.countDocuments({ category: "Hardware" });
-    const softwareProjects = await Data.countDocuments({ category: "Software" });
 
     // Count registrations from E&TC and other branches
     const entcRegistrations = await Data.countDocuments({ leaderDepartment: "E&TC" });
@@ -158,8 +134,6 @@ export const getCompetitionStats = async (req, res) => {
     res.status(200).json({
       totalRegistrations,
       prizePoolCollected,
-      hardwareProjects,
-      softwareProjects,
       entcRegistrations,
       otherRegistrations
     });
@@ -168,74 +142,56 @@ export const getCompetitionStats = async (req, res) => {
   }
 };
 
-
-
-//to get entc conacts
+// Get E&TC contacts
 export const getENTCContacts = async (req, res) => {
   try {
-    // Fetch projects where leaderDepartment is E&TC
     const entcContacts = await Data.find(
       { leaderDepartment: "E&TC" },
-      { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 } // Select only required fields
+      { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 }
     );
 
-    // Send response
     res.status(200).json({ entcContacts });
   } catch (error) {
     res.status(500).json({ error: "Error fetching E&TC contacts", details: error.message });
   }
 };
 
-
+// Get other department contacts
 export const getOtherContacts = async (req, res) => {
   try {
-    // Fetch projects where leaderDepartment is NOT E&TC
     const otherProjects = await Data.find(
-      { leaderDepartment: { $ne: "E&TC" } }, // $ne (not equal) operator filters out E&TC
-      { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 } // Select only required fields
+      { leaderDepartment: { $ne: "E&TC" } },
+      { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 }
     );
 
-    // Send response
     res.status(200).json({ otherProjects });
   } catch (error) {
     res.status(500).json({ error: "Error fetching other department contacts", details: error.message });
   }
 };
 
-
-
-
-
-
+// Get E&TC projects
 export const getEntcProjects = async (req, res) => {
   try {
-    // Fetch projects where leaderDepartment is E&TC
     const entcProjects = await Data.find(
       { leaderDepartment: "E&TC" },
-      { projectID: 1, projectName: 1, description: 1, _id: 0 } // Select only required fields
+      { projectID: 1, _id: 0 }
     );
 
-    // Send response
     res.status(200).json({ entcProjects });
   } catch (error) {
     res.status(500).json({ error: "Error fetching E&TC projects", details: error.message });
   }
 };
 
-
-
-
-
-
+// Get other department projects
 export const getOtherProjects = async (req, res) => {
   try {
-    // Fetch projects where leaderDepartment is NOT E&TC
     const otherProjects = await Data.find(
-      { leaderDepartment: { $ne: "E&TC" } }, // $ne (not equal) filters out E&TC
-      { projectID: 1, projectName: 1, description: 1, _id: 0 } // Select only required fields
+      { leaderDepartment: { $ne: "E&TC" } },
+      { projectID: 1, _id: 0 }
     );
 
-    // Send response
     res.status(200).json({ otherProjects });
   } catch (error) {
     res.status(500).json({ error: "Error fetching other department projects", details: error.message });
