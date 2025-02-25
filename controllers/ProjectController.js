@@ -159,12 +159,12 @@ export const getENTCContacts = async (req, res) => {
 // Get other department contacts
 export const getOtherContacts = async (req, res) => {
   try {
-    const otherProjects = await Data.find(
+    const otherContacts = await Data.find(
       { leaderDepartment: { $ne: "E&TC" } },
       { projectID: 1, leaderName: 1, leaderPhoneNo: 1, _id: 0 }
     );
 
-    res.status(200).json({ otherProjects });
+    res.status(200).json({ otherContacts });
   } catch (error) {
     res.status(500).json({ error: "Error fetching other department contacts", details: error.message });
   }
