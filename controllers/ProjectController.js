@@ -31,7 +31,9 @@ export const createProject = TryCatch(async (req, res) => {
   
     member1,
     member2,
-    member3
+    member3,
+    member4,
+    member5,
   } = req.body;
 
   // Validate required fields
@@ -63,6 +65,8 @@ export const createProject = TryCatch(async (req, res) => {
     member1,
     member2,
     member3,
+    member4,
+    member5
   });
 
   // Nodemailer configuration
@@ -89,7 +93,7 @@ Here are your project details:
 Here is your team information:
 - Project Leader: ${leaderName}
 - Team Members:
-  ${[member1, member2, member3].filter(Boolean).map((member, index) => `  ${index + 1}. ${member}`).join("\n")}
+  ${[member1, member2, member3, member4, member5].filter(Boolean).map((member, index) => `  ${index + 1}. ${member}`).join("\n")}
 
 Further details will be conveyed to you via email.
 Stay tuned for more updates! 

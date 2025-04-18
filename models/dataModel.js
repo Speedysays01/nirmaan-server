@@ -56,6 +56,13 @@ const DataSchema = new mongoose.Schema(
     },
     member3: {
       type: String 
+    },
+
+    member4: {
+      type: String 
+    },
+    member5: {
+      type: String 
     }
   },
   {
