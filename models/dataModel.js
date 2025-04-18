@@ -14,7 +14,11 @@ const DataSchema = new mongoose.Schema(
       type: String,
     
     },
-    leaderDepartment: {
+    leaderYear: {
+      type: String,
+      
+    },
+    category: {
       type: String,
       
     },
@@ -42,10 +46,7 @@ const DataSchema = new mongoose.Schema(
         message: "Invalid email format.",
       },
     },
-    transactionID: {
-      type: String,
-      required: true,
-    },
+  
     member1: {
       type: String
     },

@@ -24,11 +24,11 @@ async function generateUniqueProjectID() {
 export const createProject = TryCatch(async (req, res) => {
   const {
     leaderName,
-    leaderDepartment,
+    leaderYear,
     leaderRollNo,
     leaderPhoneNo,
     leaderEmail,
-    transactionID,
+  
     member1,
     member2,
     member3
@@ -37,11 +37,11 @@ export const createProject = TryCatch(async (req, res) => {
   // Validate required fields
   if (
     !leaderName ||
-    !leaderDepartment ||
+    !leaderYear ||
     !leaderRollNo ||
     !leaderPhoneNo ||
-    !leaderEmail ||
-    !transactionID
+    !leaderEmail
+      
   ) {
     return res.status(400).json({
       message: "Please provide all required fields.",
@@ -55,11 +55,11 @@ export const createProject = TryCatch(async (req, res) => {
   const project = await Data.create({
     projectID,
     leaderName,
-    leaderDepartment,
+    leaderYear,
     leaderRollNo,
     leaderPhoneNo,
     leaderEmail,
-    transactionID,
+  
     member1,
     member2,
     member3,
